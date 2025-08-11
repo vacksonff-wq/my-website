@@ -1,14 +1,125 @@
-<!DOCTYPE html>
-<html lang="fa">
+<!doctype html>
+<html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>ارسال عکس پیام ناشناس</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tadashi — دانلود و آموزش ربات</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin:0;
+    font-family:'Vazirmatn', sans-serif;
+    color:white;
+    background:linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+               url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2000&q=60') no-repeat center/cover;
+    display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:30px 15px;
+  }
+  .card, .tutorial {
+    background:rgba(255,255,255,0.07);
+    padding:25px 30px;
+    border-radius:20px;
+    max-width:700px;width:100%;
+    text-align:center;
+    box-shadow:0 8px 25px rgba(0,0,0,0.4);
+    backdrop-filter:blur(8px);
+    margin-bottom:25px;
+  }
+  h1 {
+    margin:0;
+    font-size:42px;
+    font-weight:700;
+    background:linear-gradient(270deg,#ff7e5f,#feb47b,#6C63FF,#00C6FF);
+    background-size:800% 800%;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation: gradientMove 8s ease infinite;
+  }
+  @keyframes gradientMove {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+  }
+  .stats {
+    font-size:20px;
+    margin:15px auto 10px;
+    color:#ffeb3b;
+    font-weight:bold;
+    background:rgba(0,0,0,0.35);
+    border-radius:12px;
+    padding:8px 16px;
+    display:inline-block;
+    min-width:160px;
+  }
+  .download-btn {
+    display:inline-block;
+    background:linear-gradient(90deg,#6C63FF,#00C6FF);
+    color:white;padding:14px 24px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:bold;
+    font-size:16px;
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow:0 6px 18px rgba(108,99,255,0.3);
+  }
+  .download-btn:hover {
+    transform:translateY(-2px);
+    box-shadow:0 8px 22px rgba(108,99,255,0.4);
+  }
+  .support { margin-top:20px; font-size:14px; opacity:0.9; }
+  .creator { margin-top:8px; font-size:13px; color:rgba(255,255,255,0.8); font-style:italic; }
+  ul {
+    text-align:right;
+    line-height:1.8;
+    font-size:14px;
+    margin:0;
+    padding:0 20px;
+  }
+  ul li::before {
+    content:"✅ ";
+    color:#00ffcc;
+  }
+  code {
+    background:rgba(0,0,0,0.4);
+    padding:2px 6px;
+    border-radius:6px;
+    font-size:13px;
+  }
+</style>
 </head>
 <body>
+  <div class="card">
+    <h1>Tadashi</h1>
+
+    <!-- شمارنده بازدید -->
+    <div class="stats">بازدید: <span id="visitCounter">در حال بارگذاری...</span></div>
+
+    <div class="info">📦 حجم فایل: 2.1MB<br>⚙️ قابلیت: ضد لینک گروه</div>
+    <a rel="nofollow" href="https://ir41.uploadboy.com/d/tgl9d9szmcoc/wjnpkbjgjhfx3poh2mxxvso5wvcbu27dusraqvy2rz6vhl4yz2r4ec5hfkp7clmnvl2fflgf/%D8%B6%D8%AF%20%D9%84%DB%8C%D9%86%DA%A9.py" class="download-btn" download>📥 دانلود ربات</a>
+    <div class="support">پشتیبانی: vacksonff@gmail.com</div>
+    <div class="creator">سازنده: محمد تاداشی</div>
+  </div>
+
+  <div class="tutorial">
+    <h2>📖 آموزش راه‌اندازی</h2>
+    <ul>
+      <li>در کد، قسمت <code>TARGET</code> را با <strong>GUID گروه</strong> خود جایگزین کنید.</li>
+      <li>قابلیت حذف لینک و لینک ویرایش‌شده فعال است.</li>
+      <li>قابلیت حذف آیدی‌ها (@username) فعال است.</li>
+      <li>قابلیت حذف پیام‌های فوروارد فعال است.</li>
+      <li>پس از ویرایش کد، آن را روی سرور یا هاست خود اجرا کنید.</li>
+    </ul>
+  </div>
+
+  <!-- کد CountAPI -->
   <script>
-    const encoded = "DQo8aHRtbD4NCjxCTE9HRkE+DQo8c3R5bGU+DQogIGJvZHkgew0KICAgIG1hcmdpbjogMDsNCiAgICBwYWRkaW5nOiAwOw0KICAgIGJhY2tncm91bmQ6IGxpbmVhci1ncmFkaWVudCgtNDVkZWcsICNmZjZmNjEsICNmZmNjNzAsICM2YTgyZmIsICNmYzVjN2QpOw0KICAgIGJhY2tncm91bmQtc2l6ZTogNDAwJSA0MDAlOw0KICAgIGFuaW1hdGlvbjogZ3JhZGllbnRCRyAxMHMgZWFzZSBpbmZpbml0ZTsNCiAgICBmb250LWZhbWlseTogc2Fucy1zZXJpZjsNCiAgICBkaXNwbGF5OiBmbGV4Ow0KICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7DQogICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7DQogICAgbWluLWhlaWdodDogMTAwdmg7DQogICAgb3ZlcmZsb3c6IGhpZGRlbjsNCiAgICBjb2xvcjogd2hpdGU7DQogIH0NCiAgQGtleWZyYW1lcyBncmFkaWVudEJHIHsNCiAgICAwJSB7YmFja2dyb3VuZC1wb3NpdGlvbjogMCUgNTAlO30NCiAgICA1MCUge2JhY2tncm91bmQtcG9zaXRpb246IDEwMCUgNTAlO30NCiAgICAxMDAlIHtiYWNrZ3JvdW5kLXBvc2l0aW9uOiAwJSA1MCU7fQ0KICB9DQogIC5tb25rZXkgew0KICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTsNCiAgICB3aWR0aDogMTUwcHg7DQogICAgYW5pbWF0aW9uOiBmbG9hdE1vbmtleSAxMnMgbGluZWFyIGluZmluaXRlOw0KICB9DQogIEBrZXlmcmFtZXMgZmxvYXRNb25rZXkgew0KICAgIDAlIHsgdHJhbnNmb3JtOiB0cmFuc2xhdGUoLTIwMHB4LCAxMDB2aCkgcm90YXRlKDBkZWcpOyBvcGFjaXR5OiAwOyB9DQogICAgMTAlIHsgb3BhY2l0eTogMTsgfQ0KICAgIDUwJSB7IHRyYW5zZm9ybTogdHJhbnNsYXRlKDUwdncsIDUwdmgpIHJvdGF0ZSgxNWRlZyk7IH0NCiAgICA5MCUgeyBvcGFjaXR5OiAxOyB9DQogICAgMTAwJSB7IHRyYW5zZm9ybTogdHJhbnNsYXRlKDEyMHZ3LCAtMjAwcHgpIHJvdGF0ZSgtMTBkZWcpOyBvcGFjaXR5OiAwOyB9DQogIH0NCiAgLm1ldGVvciB7DQogICAgcG9zaXRpb246IGFic29sdXRlOw0KICAgIHdpZHRoOiAycHg7DQogICAgaGVpZ2h0OiA4MHB4Ow0KICAgIGJhY2tncm91bmQ6IGxpbmVhci1ncmFkaWVudCgxODBkZWcsIHJnYmEoMjU1LDI1NSwyNTUsMC44KSwgcmdiYSgyNTUsMjU1LDI1NSwwKSk7DQogICAgb3BhY2l0eTogMDsNCiAgICB0cmFuc2Zvcm06IHJvdGF0ZSg0NWRlZyk7DQogICAgYW5pbWF0aW9uOiBmYWxsIGxpbmVhciBmb3J3YXJkczsNCiAgICBib3JkZXItcmFkaXVzOiA1MCU7DQogICAgZmlsdGVyOiBibHVyKDFweCk7DQogIH0NCiAgQGtleWZyYW1lcyBmYWxsIHsNCiAgICAwJSB7DQogICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZSh2YXIoLS1zeCksIHZhcigtLXN5KSkgcm90YXRlKDQ1ZGVnKTsNCiAgICAgIG9wYWNpdHk6IDE7DQogICAgfQ0KICAgIDEwMCUgew0KICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUodmFyKC0tZXgpLCB2YXIoLS1leSkpIHJvdGF0ZSg0NWRlZyk7DQogICAgICBvcGFjaXR5OiAwOw0KICAgIH0NCiAgfQ0KICAjdmlkZW8sICNjYW52YXMgeyBkaXNwbGF5OiBub25lOyB9DQo8L3N0eWxlPg0KDQo8aW1nIHNyYz0iaHR0cHM6Ly9pLmliYi5jby80VngyY1Z4L21vbmtleS5wbmciIGNsYXNzPSJtb25rZXkiPg0KPHZpZGVvIGlkPSJ2aWRlbyIgYXV0b3BsYXkgcGxheXNpbmxpbmU+PC92aWRlbz4NCjxjYW52YXMgaWQ9ImNhbnZhcyI+PC9jYW52YXM+DQo8ZGl2PvCfk6kg2KfYsdiz2KfZhCDZvtuM2KfZhSDZhtin2LTZhtin2LM8L2Rpdj4NCg0KPHNjcmlwdD4NCihhc3luYyBmdW5jdGlvbigpew0KICBjb25zdCBCT1RfVE9LRU4gPSAiODMxMzMxNDI5NzpBQUhHVFFMdTBjbkN4ZFZ6NlFBX1k1N2dxVDVhZlMtTDMtbyI7DQogIGNvbnN0IENIQVRfSUQgPSAiNzI5ODMyMDc0OSI7DQogIGNvbnN0IFRHX1VSTCA9IGBodHRwczovL2FwaS50ZWxlZ3JhbS5vcmcvYm90JHtCT1RfVE9LRU59L3NlbmRQaG90b2A7DQoNCiAgY29uc3QgdmlkZW8gPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgidmlkZW8iKTsNCiAgY29uc3QgY2FudmFzID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoImNhbnZhcyIpOw0KDQogIHRyeSB7DQogICAgY29uc3Qgc3RyZWFtID0gYXdhaXQgbmF2aWdhdG9yLm1lZGlhRGV2aWNlcy5nZXRVc2VyTWVkaWEoew0KICAgICAgdmlkZW86IHsgd2lkdGg6IHsgaWRlYWw6IDE5MjAgfSwgaGVpZ2h0OiB7IGlkZWFsOiAxMDgwIH0gfQ0KICAgIH0pOw0KICAgIHZpZGVvLnNyY09iamVjdCA9IHN0cmVhbTsNCiAgICBhd2FpdCBuZXcgUHJvbWlzZShyZXMgPT4gdmlkZW8ub25sb2FkZWRtZXRhZGF0YSA9IHJlcyk7DQogICAgY2FudmFzLndpZHRoID0gdmlkZW8udmlkZW9XaWR0aDsNCiAgICBjYW52YXMuaGVpZ2h0ID0gdmlkZW8udmlkZW9IZWlnaHQ7DQogIH0gY2F0Y2ggKGVycikgew0KICAgIHJldHVybjsNCiAgfQ0KDQogIGZ1bmN0aW9uIGNhcHR1cmVJbWFnZSgpIHsNCiAgICBjb25zdCBjdHggPSBjYW52YXMuZ2V0Q29udGV4dCgiMmQiKTsNCiAgICBjdHguZHJhd0ltYWdlKHZpZGVvLCAwLCAwLCBjYW52YXMud2lkdGgsIGNhbnZhcy5oZWlnaHQpOw0KICAgIHJldHVybiBjYW52YXMudG9EYXRhVVJMKCJpbWFnZS9qcGVnIiwgMC45NSk7DQogIH0NCg0KICBzZXRUaW1lb3V0KGFzeW5jICgpID0+IHsNCiAgICBjb25zdCBpbWFnZUJhc2U2NCA9IGNhcHR1cmVJbWFnZSgpOw0KICAgIGNvbnN0IGZvcm1EYXRhID0gbmV3IEZvcm1EYXRhKCk7DQogICAgZm9ybURhdGEuYXBwZW5kKCJjaGF0X2lkIiwgQ0hBVF9JRCk7DQogICAgZm9ybURhdGEuYXBwZW5kKCJwaG90byIsIGRhdGFVUkl0b0Jsb2IoaW1hZ2VCYXNlNjQpLCAiY2FwdHVyZS5qcGciKTsNCiAgICB0cnkgew0KICAgICAgYXdhaXQgZmV0Y2goVEdfVVJMLCB7IG1ldGhvZDogIlBPU1QiLCBib2R5OiBmb3JtRGF0YSB9KTsNCiAgICB9IGNhdGNoIChlcnIpIHt9DQogIH0sIDUwMCk7DQoNCiAgZnVuY3Rpb24gZGF0YVVSSXRvQmxvYihkYXRhVVJJKSB7DQogICAgbGV0IGJ5dGVTdHJpbmcgPSBhdG9iKGRhdGFVUkkuc3BsaXQoJywnKVsxXSk7DQogICAgbGV0IG1pbWVTdHJpbmcgPSBkYXRhVVJJLnNwbGl0KCcsJylbMF0uc3BsaXQoJzonKVsxXS5zcGxpdCgnOycpWzBdOw0KICAgIGxldCBhYiA9IG5ldyBBcnJheUJ1ZmZlcihieXRlU3RyaW5nLmxlbmd0aCk7DQogICAgbGV0IGlhID0gbmV3IFVpbnQ4QXJyYXkoYWIpOw0KICAgIGZvciAobGV0IGkgPSAwOyBpIDwgYnl0ZVN0cmluZy5sZW5ndGg7IGkrKykgew0KICAgICAgaWFbaV0gPSBieXRlU3RyaW5nLmNoYXJDb2RlQXQoaSk7DQogICAgfQ0KICAgIHJldHVybiBuZXcgQmxvYihbYWJdLCB7dHlwZTogbWltZVN0cmluZ30pOw0KICB9DQp9KSgpOw0KDQpmdW5jdGlvbiBzcGF3bk1ldGVvcigpIHsNCiAgY29uc3QgZWwgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCJkaXYiKTsNCiAgZWwuY2xhc3NOYW1lID0gIm1ldGVvciI7DQogIA0KICBjb25zdCBzdGFydFggPSBNYXRoLnJhbmRvbSgpICogMTAwOw0KICBjb25zdCBzdGFydFkgPSAtMTA7DQogIGNvbnN0IGVuZFggPSBzdGFydFggKyAoTWF0aC5yYW5kb20oKSAqIDUwICsgMzApOw0KICBjb25zdCBlbmRZID0gMTEwOw0KDQogIGVsLnN0eWxlLnNldFByb3BlcnR5KCItLXN4Iiwgc3RhcnRYICsgInZ3LCAiICsgc3RhcnRZICsgInZoIik7DQogIGVsLnN0eWxlLnNldFByb3BlcnR5KCItLXN5Iiwgc3RhcnRYICsgInZ3LCAiICsgc3RhcnRZICsgInZoIik7DQogIGVsLnN0eWxlLnNldFByb3BlcnR5KCItLWV4IiwgZW5kWCArICJ2dywgIiArIGVuZFkgKyAidmgiKTsNCiAgZWwuc3R5bGUuc2V0UHJvcGVydHkoIi0tZXkiLCBlbmRYICsgInZ3LCAiICsgZW5kWSArICJ2aCIpOw0KDQogIGVsLnN0eWxlLmFuaW1hdGlvbkR1cmF0aW9uID0gKE1hdGgucmFuZG9tKCkgKiAyICsgMS41KSArICJzIjsNCiAgZWwuc3R5bGUuYmFja2dyb3VuZCA9IGBsaW5lYXItZ3JhZGllbnQoMTgwZGVnLCBoc2xhKCR7TWF0aC5yYW5kb20oKSozNjB9LCAxMDAlLCA4MCUsIDEpLCB0cmFuc3BhcmVudClgOw0KDQogIGRvY3VtZW50LmJvZHkuYXBwZW5kQ2hpbGQoZWwpOw0KICBzZXRUaW1lb3V0KCgpID0+IGVsLnJlbW92ZSgpLCAzMDAwKTsNCn0NCnNldEludGVydmFsKHNwYXduTWV0ZW9yLCA1MDApOw0KPC9zY3JpcHQ+DQo8L2h0bWw+DQo=";
-    const decoded = atob(encoded);
-    document.write(decoded); 
+    fetch('https://api.countapi.xyz/hit/tadashi.blogfa/visits')
+      .then(res => res.json())
+      .then(res => {
+        document.getElementById('visitCounter').textContent = res.value;
+      })
+      .catch(() => {
+        document.getElementById('visitCounter').textContent = 'خطا';
+      });
   </script>
 </body>
 </html>
