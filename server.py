@@ -1,7 +1,11 @@
 from flask import Flask, request, jsonify
 import requests
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+# فعال کردن CORS برای همه‌ی مبداها
+CORS(app)
 
 # 🔑 توکن ربات روبیکا
 TOKEN = "CBIDF0XADFFUJHQTXHBWOBPBNHNUHEJQTNFHMHXZAIMSGDEJFGCEIPJJVAIJATJU"
@@ -15,12 +19,16 @@ def home():
 
 @app.route("/send", methods=["POST"])
 def send():
-    data = request.json
-    text = data.get("text")
+    data = request.get_json(silent=True) or {}
+    text = (data.get("text") or "").strip()
     if not text:
         return jsonify({"status": "ERROR", "detail": "empty message"}), 400
     try:
-        r = requests.post(f"{BASE}/sendMessage", json={"chat_id": CHAT_ID, "text": text}, timeout=20)
+        r = requests.post(
+            f"{BASE}/sendMessage",
+            json={"chat_id": CHAT_ID, "text": text},
+            timeout=20
+        )
         return jsonify(r.json())
     except Exception as e:
         return jsonify({"status": "ERROR", "detail": str(e)}), 500
